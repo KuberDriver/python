@@ -105,6 +105,8 @@ for i in {1..90}; do # timeout for 3 minutes
    sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
+      mkdir -P /home/runner/.kube
+      sudo cp $HOME/.kube/config /home/runner/.kube/config
       break
   fi
   sleep 2
