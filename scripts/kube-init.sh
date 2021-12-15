@@ -32,7 +32,7 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-# HOME=/home/travis # Not required in GH Runner
+HOME=/home/runner # Not required in GH Runner
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
@@ -105,8 +105,10 @@ for i in {1..90}; do # timeout for 3 minutes
    sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
-      mkdir -P /home/runner/.kube
+      mkdir -p /home/runner/.kube
       sudo cp $HOME/.kube/config /home/runner/.kube/config
+      echo "PWD is: ${PWD}"
+      cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
       break
   fi
   sleep 2
