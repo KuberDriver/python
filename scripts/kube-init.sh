@@ -112,9 +112,9 @@ for i in {1..90}; do # timeout for 3 minutes
       cat $HOME/.kube/config
       echo "print kube config with sudo:"
       sudo cat /root/.kube/config
-      cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-      chown $USER:$USER $HOME/.kube/config
-      #cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
+      sudo mv /root/.kube $HOME/.kube # this will write over any previous configuration
+      sudo chown -R $USER $HOME/.kube
+      sudo chgrp -R $USER $HOME/.kube
       break
   fi
   sleep 2
