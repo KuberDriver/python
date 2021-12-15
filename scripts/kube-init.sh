@@ -111,7 +111,9 @@ for i in {1..90}; do # timeout for 3 minutes
       echo "print runner kube config:"
       cat $HOME/.kube/config
       echo "print kube config with sudo:"
-      sudo cat $HOME/.kube/config
+      sudo cat /root/.kube/config
+      cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+      chown $USER:$USER $HOME/.kube/config
       #cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
       break
   fi
