@@ -105,10 +105,14 @@ for i in {1..90}; do # timeout for 3 minutes
    sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
-      mkdir -p /home/runner/.kube
-      sudo cp $HOME/.kube/config /home/runner/.kube/config
-      echo "PWD is: ${PWD}"
-      cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
+      #mkdir -p /home/runner/.kube
+      #sudo cp $HOME/.kube/config /home/runner/.kube/config
+      echo "PWD is: ${PWD} and Home is ${HOME}"
+      echo "print runner kube config:"
+      cat $HOME/.kube/config
+      echo "print kube config with sudo:"
+      sudo cat $HOME/.kube/config
+      #cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
       break
   fi
   sleep 2
