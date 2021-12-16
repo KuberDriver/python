@@ -70,12 +70,12 @@ echo "Checking docker service"
 sudo docker ps
 
 echo "Download Kubernetes CLI"
-wget -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
+wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
 sudo chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 
 echo "Download minikube from minikube project"
-wget -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+wget -q -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
 sudo chmod +x minikube
 sudo mv minikube /usr/local/bin/
 
@@ -130,6 +130,10 @@ ls -all $HOME/.kube
 
 echo "kubectl status"
 kubectl cluster-info
+
+echo "KUBECONFIG is ${KUBECOKUBECONFIG}"
+
+sed 's/root/home\/vkr/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
 
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
