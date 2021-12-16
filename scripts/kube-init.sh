@@ -54,8 +54,8 @@ docker --version
 # installs per default
 # See:
 # https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
-K8S_VERSION=$(curl -sS https://storage.googleapis.com/kubernetes-release/release/stable.txt)
-echo "K8S_VERSION : ${K8S_VERSION}"
+# K8S_VERSION=$(curl -sS https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+# echo "K8S_VERSION : ${K8S_VERSION}"
 
 # You can pass variables to minikube using MINIKUBE_ARGS
 # If using tox you can export TOX_TESTENV_PASSENV.
@@ -64,11 +64,11 @@ echo "K8S_VERSION : ${K8S_VERSION}"
 # now tox will run minikube with the specified flag
 # MINIKUBE_ARGS=${MINIKUBE_ARGS:-""}
 
-echo "Starting docker service"
-sudo systemctl enable docker.service
-sudo systemctl start docker.service --ignore-dependencies
-echo "Checking docker service"
-sudo docker ps
+# echo "Starting docker service"
+# sudo systemctl enable docker.service
+# sudo systemctl start docker.service --ignore-dependencies
+# echo "Checking docker service"
+# sudo docker ps
 
 # echo "Download Kubernetes CLI"
 # wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
