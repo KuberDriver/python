@@ -32,7 +32,7 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-HOME=/home/travis
+HOME=/home/runner
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
