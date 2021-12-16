@@ -75,31 +75,31 @@ wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K
 sudo chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 
-echo "Download minikube from minikube project"
-wget -q -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
-sudo chmod +x minikube
-sudo mv minikube /usr/local/bin/
+# echo "Download minikube from minikube project"
+# wget -q -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+# sudo chmod +x minikube
+# sudo mv minikube /usr/local/bin/
 
 # L68-100: Set up minikube within Travis CI
 # See https://github.com/kubernetes/minikube/blob/master/README.md#linux-continuous-integration-without-vm-support
-echo "Set up minikube"
-export MINIKUBE_WANTUPDATENOTIFICATION=false
-export MINIKUBE_WANTREPORTERRORPROMPT=false
-#export CHANGE_MINIKUBE_NONE_USER=true #Not working for kubectl commands
-sudo mkdir -p $HOME/.kube
-sudo mkdir -p $HOME/.minikube
-sudo touch $HOME/.kube/config
-export KUBECONFIG=$HOME/.kube/config
-export MINIKUBE_HOME=$HOME/.minikube
-export MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-none}
+# echo "Set up minikube"
+# export MINIKUBE_WANTUPDATENOTIFICATION=false
+# export MINIKUBE_WANTREPORTERRORPROMPT=false
+# export CHANGE_MINIKUBE_NONE_USER=true #Not working for kubectl commands
+# sudo mkdir -p $HOME/.kube
+# sudo mkdir -p $HOME/.minikube
+# sudo touch $HOME/.kube/config
+# export KUBECONFIG=$HOME/.kube/config
+# export MINIKUBE_HOME=$HOME/.minikube
+# export MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-none}
 
 # Used bootstrapper to be kubeadm for the most recent k8s version
 # since localkube is depreciated and only supported up to version 1.10.0
-echo "Starting minikube"
-sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtostderr $MINIKUBE_ARGS
+# echo "Starting minikube"
+# sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtostderr $MINIKUBE_ARGS
 
 echo "Minikube status:"
-sudo minikube status
+minikube status
 
 MINIKUBE_OK="false"
 
