@@ -27,12 +27,114 @@ function clean_exit(){
 
 trap "clean_exit" EXIT
 
-MINIKUBE_OK="false"
+# Switch off SE-Linux
+setenforce 0
 
-# echo "Waiting for minikube to start..."
+# Mount root to fix dns issues
+# Define $HOME since somehow this is not defined
+HOME=/home/runner # Not required in GH Runner
+sudo mount --make-rshared /
+
+# Install conntrack (required by minikube/K8s 1.18+),
+# and socat, which is required for port forwarding.
+sudo apt-get update
+sudo apt-get install -y conntrack socat
+
+# Install docker if needed
+path_to_executable=$(which docker)
+if [ -x "$path_to_executable" ] ; then
+    echo "Found Docker installation"
+else
+    curl -sSL https://get.docker.io | sudo bash
+fi
+docker --version
+
+# Get the latest stable version of kubernetes, this is not always what minikube
+# installs per default
+# See:
+# https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
+K8S_VERSION=$(curl -sS https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+echo "K8S_VERSION : ${K8S_VERSION}"
+
+# You can pass variables to minikube using MINIKUBE_ARGS
+# If using tox you can export TOX_TESTENV_PASSENV.
+# For example, you can run:
+# $ export TOX_TESTENV_PASSENV="MINIKUBE_ARGS=--kubernetes-version=1.X.Y"
+# now tox will run minikube with the specified flag
+MINIKUBE_ARGS=${MINIKUBE_ARGS:-""}
+
+echo "Starting docker service"
+sudo systemctl enable docker.service
+sudo systemctl start docker.service --ignore-dependencies
+echo "Checking docker service"
+sudo docker ps
+
+echo "Download Kubernetes CLI"
+wget -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
+sudo chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+echo "Download minikube from minikube project"
+wget -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+sudo chmod +x minikube
+sudo mv minikube /usr/local/bin/
+
+# L68-100: Set up minikube within Travis CI
+# See https://github.com/kubernetes/minikube/blob/master/README.md#linux-continuous-integration-without-vm-support
+echo "Set up minikube"
+export MINIKUBE_WANTUPDATENOTIFICATION=false
+export MINIKUBE_WANTREPORTERRORPROMPT=false
+export CHANGE_MINIKUBE_NONE_USER=true
+sudo mkdir -p $HOME/.kube
+sudo mkdir -p $HOME/.minikube
+sudo touch $HOME/.kube/config
+export KUBECONFIG=$HOME/.kube/config
+export MINIKUBE_HOME=$HOME
+export MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-none}
+
+# Used bootstrapper to be kubeadm for the most recent k8s version
+# since localkube is depreciated and only supported up to version 1.10.0
+echo "Starting minikube"
+sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtostderr $MINIKUBE_ARGS
+
+echo "Minikube status:"
+sudo minikube status
+
+MINIKUBE_OK="false"
+echo "kubectl status with sudo"
+sudo kubectl cluster-info
+
+echo "kubectl status"
+kubectl cluster-info
+
+
+# Adding below as CHANGE_MINIKUBE_NONE_USER=true is not helping
+echo "Copy root .minikube to $HOME"
+sudo cp -r /root/.minikube $HOME
+echo "list MINIKUBE_HOME"
+ls -all $MINIKUBE_HOME
+
+echo "Copy root .kube to $HOME"
+sudo cp -r /root/.kube $HOME
+echo "list .kube from $HOME"
+ls -all $HOME/.kube
+
+sudo chown -R runner:runner $HOME/.kube $HOME/.minikube
+echo "list .minikube from $HOME post permission updates"
+ls -all $MINIKUBE_HOME
+
+
+echo "list .kube from $HOME post permission updates"
+ls -all $HOME/.kube
+
+
+echo "kubectl status"
+kubectl cluster-info
+
+echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
-for i in {1..20}; do # timeout for 3 minutes
- kubectl get po &> /dev/null
+for i in {1..90}; do # timeout for 3 minutes
+   sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
       break
