@@ -99,13 +99,28 @@ sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtos
 
 MINIKUBE_OK="false"
 
-sudo cp /root/.kube/config $HOME/.kube/config
-sudo chown -R runner $HOME/.kube
-
 # Adding below as CHANGE_MINIKUBE_NONE_USER=true is not helping
+echo "Copy root .minikube to $HOME"
 sudo cp -r /root/.minikube $HOME
+echo "list MINIKUBE_HOME"
+ls -all $MINIKUBE_HOME
+
+echo "Copy root .kube to $HOME"
 sudo cp -r /root/.kube $HOME
-sudo chown -R runner $HOME/.kube $HOME/.minikube
+echo "list .kube from $HOME"
+ls -all $HOME/.kube
+
+sudo chown -R runner:runner $HOME/.kube $HOME/.minikube
+echo "list .minikube from $HOME post permission updates"
+ls -all $MINIKUBE_HOME
+
+
+echo "list .kube from $HOME post permission updates"
+ls -all $HOME/.kube
+
+
+echo "kubectl status"
+kubectl cluster-info
 
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
