@@ -105,7 +105,7 @@ sudo chown -R runner $HOME/.kube
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
-   kubectl get po &> /dev/null
+   sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
       break
