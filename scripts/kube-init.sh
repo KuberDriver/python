@@ -99,6 +99,9 @@ sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtos
 
 MINIKUBE_OK="false"
 
+sudo cp /root/.kube/config $HOME/.kube/config
+sudo chown -R runner $HOME/.kube
+
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
