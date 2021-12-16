@@ -84,7 +84,7 @@ sudo mv minikube /usr/local/bin/
 echo "Set up minikube"
 export MINIKUBE_WANTUPDATENOTIFICATION=false
 export MINIKUBE_WANTREPORTERRORPROMPT=false
-export CHANGE_MINIKUBE_NONE_USER=true
+export CHANGE_MINIKUBE_NONE_USER=true #Not working for kubectl commands
 sudo mkdir -p $HOME/.kube
 sudo mkdir -p $HOME/.minikube
 sudo touch $HOME/.kube/config
@@ -101,6 +101,10 @@ MINIKUBE_OK="false"
 
 sudo cp /root/.kube/config $HOME/.kube/config
 sudo chown -R runner $HOME/.kube
+
+# Adding below as CHANGE_MINIKUBE_NONE_USER=true is not helping
+sudo cp /root/.kube /root/.minikube $HOME
+sudo chown -R $USER $HOME/.kube $HOME/.minikube
 
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
