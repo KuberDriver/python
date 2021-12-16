@@ -136,6 +136,9 @@ cat $KUBECONFIG
 
 sed 's/root/home\/vkr/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
 
+echo "Post sed: KUBECONFIG is ${KUBECONFIG}"
+cat $KUBECONFIG
+
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
