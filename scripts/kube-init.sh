@@ -112,7 +112,8 @@ for i in {1..90}; do # timeout for 3 minutes
       cat $HOME/.kube/config
       echo "print kube config with sudo:"
       sudo cat /root/.kube/config
-      sudo mv /root/.kube/config $HOME/.kube/config
+      sudo cp /root/.kube/config $HOME/.kube/config
+      sudo cp /root/.minikube $HOME/.minikube
       sudo chown -R runner $HOME/.kube $HOME/.minikube
       break
   fi
@@ -127,28 +128,28 @@ if [ $MINIKUBE_OK == "false" ]; then
 fi
 
 echo "Dump Kubernetes Objects..."
-sudo kubectl get componentstatuses
-sudo kubectl get configmaps
-sudo kubectl get daemonsets
-sudo kubectl get deployments
-sudo kubectl get events
-sudo kubectl get endpoints
-sudo kubectl get horizontalpodautoscalers
-sudo kubectl get ingress
-sudo kubectl get jobs
-sudo kubectl get limitranges
-sudo kubectl get nodes
-sudo kubectl get namespaces
-sudo kubectl get pods
-sudo kubectl get persistentvolumes
-sudo kubectl get persistentvolumeclaims
-sudo kubectl get quota
-sudo kubectl get resourcequotas
-sudo kubectl get replicasets
-sudo kubectl get replicationcontrollers
-sudo kubectl get secrets
-sudo kubectl get serviceaccounts
-sudo kubectl get services
+kubectl get componentstatuses
+kubectl get configmaps
+kubectl get daemonsets
+kubectl get deployments
+kubectl get events
+kubectl get endpoints
+kubectl get horizontalpodautoscalers
+kubectl get ingress
+kubectl get jobs
+kubectl get limitranges
+kubectl get nodes
+kubectl get namespaces
+kubectl get pods
+kubectl get persistentvolumes
+kubectl get persistentvolumeclaims
+kubectl get quota
+kubectl get resourcequotas
+kubectl get replicasets
+kubectl get replicationcontrollers
+kubectl get secrets
+kubectl get serviceaccounts
+kubectl get services
 
 
 echo "Running tests..."
