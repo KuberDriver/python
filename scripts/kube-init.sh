@@ -32,7 +32,8 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-HOME=/home/runner
+#HOME=/home/runner
+echo "Home is ${HOME}"
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
@@ -84,7 +85,7 @@ sudo mv minikube /usr/local/bin/
 echo "Set up minikube"
 export MINIKUBE_WANTUPDATENOTIFICATION=false
 export MINIKUBE_WANTREPORTERRORPROMPT=false
-export CHANGE_MINIKUBE_NONE_USER=true #Not working for kubectl commands
+#export CHANGE_MINIKUBE_NONE_USER=true #Not working for kubectl commands
 sudo mkdir -p $HOME/.kube
 sudo mkdir -p $HOME/.minikube
 sudo touch $HOME/.kube/config
@@ -96,6 +97,9 @@ export MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-none}
 # since localkube is depreciated and only supported up to version 1.10.0
 echo "Starting minikube"
 sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtostderr $MINIKUBE_ARGS
+
+echo "Minikube status:"
+sudo minikube status
 
 MINIKUBE_OK="false"
 
