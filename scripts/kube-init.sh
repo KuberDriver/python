@@ -131,7 +131,8 @@ ls -all $HOME/.kube
 echo "kubectl status"
 kubectl cluster-info
 
-echo "KUBECONFIG is ${KUBECOKUBECONFIG}"
+echo "KUBECONFIG is ${KUBECONFIG}"
+cat $KUBECONFIG
 
 sed 's/root/home\/vkr/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
 
