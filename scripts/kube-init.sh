@@ -32,7 +32,7 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-HOME=/home/runner # Not required in GH Runner
+HOME=/home/travis
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
@@ -102,19 +102,9 @@ MINIKUBE_OK="false"
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
-   sudo kubectl get po &> /dev/null
+   kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
-      #mkdir -p /home/runner/.kube
-      #sudo cp $HOME/.kube/config /home/runner/.kube/config
-      echo "PWD is: ${PWD} and Home is ${HOME}"
-      echo "print runner kube config:"
-      cat $HOME/.kube/config
-      echo "print kube config with sudo:"
-      sudo cat /root/.kube/config
-      sudo cp /root/.kube/config $HOME/.kube/config
-      sudo cp /root/.minikube $HOME/.minikube
-      sudo chown -R runner $HOME/.kube $HOME/.minikube
       break
   fi
   sleep 2
