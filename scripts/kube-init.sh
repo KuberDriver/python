@@ -112,9 +112,8 @@ for i in {1..90}; do # timeout for 3 minutes
       cat $HOME/.kube/config
       echo "print kube config with sudo:"
       sudo cat /root/.kube/config
-      sudo mv /root/.kube $HOME/.kube # this will write over any previous configuration
-      sudo chown -R $USER $HOME/.kube
-      sudo chgrp -R $USER $HOME/.kube
+      sudo mv /root/.kube /root/.minikube $HOME
+      sudo chown -R $USER $HOME/.kube $HOME/.minikube
       break
   fi
   sleep 2
