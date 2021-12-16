@@ -32,7 +32,7 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-#HOME=/home/runner
+HOME=/home/runner
 echo "Home is ${HOME}"
 sudo mount --make-rshared /
 
