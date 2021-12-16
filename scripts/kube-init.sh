@@ -89,7 +89,7 @@ sudo mkdir -p $HOME/.kube
 sudo mkdir -p $HOME/.minikube
 sudo touch $HOME/.kube/config
 export KUBECONFIG=$HOME/.kube/config
-export MINIKUBE_HOME=$HOME
+export MINIKUBE_HOME=$HOME/.minikube
 export MINIKUBE_DRIVER=${MINIKUBE_DRIVER:-none}
 
 # Used bootstrapper to be kubeadm for the most recent k8s version
