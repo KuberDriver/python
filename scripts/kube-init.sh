@@ -122,6 +122,8 @@ ls -all $MINIKUBE_HOME
 echo "list .kube from $HOME post permission updates"
 ls -all $HOME/.kube
 
+sudo su
+su runner
 
 echo "kubectl status"
 kubectl cluster-info
