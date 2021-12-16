@@ -62,7 +62,7 @@ echo "K8S_VERSION : ${K8S_VERSION}"
 # For example, you can run:
 # $ export TOX_TESTENV_PASSENV="MINIKUBE_ARGS=--kubernetes-version=1.X.Y"
 # now tox will run minikube with the specified flag
-MINIKUBE_ARGS=${MINIKUBE_ARGS:-""}
+# MINIKUBE_ARGS=${MINIKUBE_ARGS:-""}
 
 echo "Starting docker service"
 sudo systemctl enable docker.service
@@ -70,10 +70,10 @@ sudo systemctl start docker.service --ignore-dependencies
 echo "Checking docker service"
 sudo docker ps
 
-echo "Download Kubernetes CLI"
-wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
-sudo chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
+# echo "Download Kubernetes CLI"
+# wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
+# sudo chmod +x kubectl
+# sudo mv kubectl /usr/local/bin/
 
 # echo "Download minikube from minikube project"
 # wget -q -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
@@ -104,33 +104,32 @@ minikube status
 MINIKUBE_OK="false"
 
 # Adding below as CHANGE_MINIKUBE_NONE_USER=true is not helping
-echo "Copy root .minikube to $HOME"
-sudo cp -r /root/.minikube $HOME
+# echo "Copy root .minikube to $HOME"
+# sudo cp -r /root/.minikube $HOME
 echo "list MINIKUBE_HOME"
 ls -all $MINIKUBE_HOME
 
-echo "Copy root .kube to $HOME"
-sudo cp -r /root/.kube $HOME
+#echo "Copy root .kube to $HOME"
+#sudo cp -r /root/.kube $HOME
 echo "list .kube from $HOME"
 ls -all $HOME/.kube
 
-sudo chown -R runner:runner $HOME/.kube $HOME/.minikube
+#sudo chown -R runner:runner $HOME/.kube $HOME/.minikube
 echo "list .minikube from $HOME post permission updates"
 ls -all $MINIKUBE_HOME
-
 
 echo "list .kube from $HOME post permission updates"
 ls -all $HOME/.kube
 
-sudo su
-su runner
+#sudo su
+#su runner
 
 echo "kubectl status"
 kubectl cluster-info
 
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
-for i in {1..90}; do # timeout for 3 minutes
+for i in {1..20}; do # timeout for 3 minutes
    sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
