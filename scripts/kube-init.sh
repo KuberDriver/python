@@ -134,7 +134,7 @@ kubectl cluster-info
 echo "KUBECONFIG is ${KUBECONFIG}"
 cat $KUBECONFIG
 
-sed 's/root/home\/vkr/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
+sed 's/root/home\/runner/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
 
 echo "Post sed: KUBECONFIG is ${KUBECONFIG}"
 cat $KUBECONFIG
