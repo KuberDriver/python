@@ -32,7 +32,8 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-HOME=/home/runner # Not required in GH Runner
+# Changed from travis to GH Actions agent default user
+HOME=/home/runner 
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
@@ -70,12 +71,12 @@ echo "Checking docker service"
 sudo docker ps
 
 echo "Download Kubernetes CLI"
-wget -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
+wget -q -O kubectl "http://storage.googleapis.com/kubernetes-release/release/${K8S_VERSION}/bin/linux/amd64/kubectl"
 sudo chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 
 echo "Download minikube from minikube project"
-wget -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+wget -q -O minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
 sudo chmod +x minikube
 sudo mv minikube /usr/local/bin/
 
@@ -99,16 +100,24 @@ sudo minikube start --vm-driver=$MINIKUBE_DRIVER --bootstrapper=kubeadm --logtos
 
 MINIKUBE_OK="false"
 
+# Adding below as CHANGE_MINIKUBE_NONE_USER=true is not helping
+echo "Copy root .minikube to $HOME"
+sudo cp -r /root/.minikube $HOME
+
+echo "Copy root .kube to $HOME"
+sudo cp -r /root/.kube $HOME
+
+sudo chown -R runner:runner $HOME/.kube $HOME/.minikube
+
+# Correct paths to make kubectl accessible without sudo
+sed 's/root/home\/runner/g' $KUBECONFIG > tmp; mv tmp $KUBECONFIG
+
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
-   sudo kubectl get po &> /dev/null
+   kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
-      mkdir -p /home/runner/.kube
-      sudo cp $HOME/.kube/config /home/runner/.kube/config
-      echo "PWD is: ${PWD}"
-      cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
       break
   fi
   sleep 2
@@ -122,28 +131,28 @@ if [ $MINIKUBE_OK == "false" ]; then
 fi
 
 echo "Dump Kubernetes Objects..."
-sudo kubectl get componentstatuses
-sudo kubectl get configmaps
-sudo kubectl get daemonsets
-sudo kubectl get deployments
-sudo kubectl get events
-sudo kubectl get endpoints
-sudo kubectl get horizontalpodautoscalers
-sudo kubectl get ingress
-sudo kubectl get jobs
-sudo kubectl get limitranges
-sudo kubectl get nodes
-sudo kubectl get namespaces
-sudo kubectl get pods
-sudo kubectl get persistentvolumes
-sudo kubectl get persistentvolumeclaims
-sudo kubectl get quota
-sudo kubectl get resourcequotas
-sudo kubectl get replicasets
-sudo kubectl get replicationcontrollers
-sudo kubectl get secrets
-sudo kubectl get serviceaccounts
-sudo kubectl get services
+kubectl get componentstatuses
+kubectl get configmaps
+kubectl get daemonsets
+kubectl get deployments
+kubectl get events
+kubectl get endpoints
+kubectl get horizontalpodautoscalers
+kubectl get ingress
+kubectl get jobs
+kubectl get limitranges
+kubectl get nodes
+kubectl get namespaces
+kubectl get pods
+kubectl get persistentvolumes
+kubectl get persistentvolumeclaims
+kubectl get quota
+kubectl get resourcequotas
+kubectl get replicasets
+kubectl get replicationcontrollers
+kubectl get secrets
+kubectl get serviceaccounts
+kubectl get services
 
 
 echo "Running tests..."
