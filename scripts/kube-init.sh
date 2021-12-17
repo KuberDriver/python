@@ -32,7 +32,7 @@ setenforce 0
 
 # Mount root to fix dns issues
 # Define $HOME since somehow this is not defined
-HOME=/home/travis
+HOME=/home/runner # Not required in GH Runner
 sudo mount --make-rshared /
 
 # Install conntrack (required by minikube/K8s 1.18+),
@@ -102,9 +102,13 @@ MINIKUBE_OK="false"
 echo "Waiting for minikube to start..."
 # this for loop waits until kubectl can access the api server that Minikube has created
 for i in {1..90}; do # timeout for 3 minutes
-   kubectl get po &> /dev/null
+   sudo kubectl get po &> /dev/null
    if [ $? -ne 1 ]; then
       MINIKUBE_OK="true"
+      mkdir -p /home/runner/.kube
+      sudo cp $HOME/.kube/config /home/runner/.kube/config
+      echo "PWD is: ${PWD}"
+      cp $HOME/.kube/config $GITHUB_WORKSPACE/python-base/python/kubernetes/config
       break
   fi
   sleep 2
@@ -118,28 +122,28 @@ if [ $MINIKUBE_OK == "false" ]; then
 fi
 
 echo "Dump Kubernetes Objects..."
-kubectl get componentstatuses
-kubectl get configmaps
-kubectl get daemonsets
-kubectl get deployments
-kubectl get events
-kubectl get endpoints
-kubectl get horizontalpodautoscalers
-kubectl get ingress
-kubectl get jobs
-kubectl get limitranges
-kubectl get nodes
-kubectl get namespaces
-kubectl get pods
-kubectl get persistentvolumes
-kubectl get persistentvolumeclaims
-kubectl get quota
-kubectl get resourcequotas
-kubectl get replicasets
-kubectl get replicationcontrollers
-kubectl get secrets
-kubectl get serviceaccounts
-kubectl get services
+sudo kubectl get componentstatuses
+sudo kubectl get configmaps
+sudo kubectl get daemonsets
+sudo kubectl get deployments
+sudo kubectl get events
+sudo kubectl get endpoints
+sudo kubectl get horizontalpodautoscalers
+sudo kubectl get ingress
+sudo kubectl get jobs
+sudo kubectl get limitranges
+sudo kubectl get nodes
+sudo kubectl get namespaces
+sudo kubectl get pods
+sudo kubectl get persistentvolumes
+sudo kubectl get persistentvolumeclaims
+sudo kubectl get quota
+sudo kubectl get resourcequotas
+sudo kubectl get replicasets
+sudo kubectl get replicationcontrollers
+sudo kubectl get secrets
+sudo kubectl get serviceaccounts
+sudo kubectl get services
 
 
 echo "Running tests..."
